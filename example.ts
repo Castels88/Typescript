@@ -6,13 +6,16 @@ interface Currency<type> {
 const obj1: Currency<string>={currency:"euro"}
 // perfetto in questo caso tutto andra per il meglio perche obj rispetta tutti i type di Currency
 
-// ma se crearssi un altro obj2 che al suo interno abbia un oggetto con altre prorprieta riferibili
-//a quella della precedente currency interface?
-const obj2: Currency<{name:string, code:string}>={currency:{name:"euro", code:"EU"}}//avro questo errore => Il tipo '{ name: string; code: string; }' non è assegnabile al tipo 'string'.ts(2322)
+// ma se crearssi un altro obj2 che al suo interno abbia un oggetto con altre 
+//prorprieta 
+const obj2: Currency<{name:string, code:string}>={currency:{name:"euro", code:"EU"}}//avro questo errore => 
+//Il tipo '{ name: string; code: string; }' non è assegnabile al tipo 'string'.ts(2322)
 //example.ts(4, 5): Il tipo previsto proviene dalla proprietà 'currency', dichiarata in questo punto nel tipo 'Currency'
 
-// quello che posiamo fare e rendere la nostra inteface generic aggiungendo dopo il nome Currency<type> e poi all'interno prorietà: type e poi
-// dobbiamo anche definirle il tipo di type nelle constanti che richiamano la interface const => obj1: Currency<string>={currency:"euro"}
+// quello che posiamo fare e rendere la nostra inteface generic aggiungendo
+// dopo il nome Currency<type> e poi all'interno prorietà: type e poi
+// dobbiamo anche definirle il tipo di type nelle constanti che richiamano la interface const 
+//=> obj1: Currency<string>={currency:"euro"}
 //per la obj2 attenzione abbiamo un oggetto quindi dobbiamo inserire tra i <> un oggetto {}
 
 //-------------------------------------//
