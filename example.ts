@@ -1,74 +1,38 @@
-// in questa lezione andremo a vedere come cambiare 
-// la visibilità dei membri della nostra classe
-// creiamo la classe
-// proprietà e metodi delle nostre classi possono essere "public","privacct","protected"
-// quando non è nominato nessuno di questi davanti alla proprietà o metodo essi risultano "public" ma possiamo anche aggiungerela 
-class Country{
+// in questa lezione vedremo come creare classi generiche
+// al momento dentro languages puo essere inserito solo un array di stringhe 
+// e se volessimo inserire all'interno non solo stringhe?
+// dobbiamo rendere la nostra classe generica
+// vediamo come =>
+// 1) prima dobbiamo aggiungere un<Type> alla nostra classe che chiameremo languageType
+// 2) aggiungiamo questo type al metodo addLanguages
+// 3) a riga 13 andiamo a modificare languages in modo che accetti il type
+// in questo modo il nostro array prendere qualciasi type non solo stringhe
+// 4) ma se controlliamo il type Ts ci dara type language: unknown
+// 5) per ovviare a cio a riga 27 diamo a country in type string 
+class Country<LanguageType>{
     public readonly name:string
-    protected readonly code: string // se metto qui protected vorra dirre che la prorpieta puo essere
-    //richiamata solo all interno della classe se provvi ad richiamarla esterna alla classe avro un errore
+    protected readonly code: string 
 
-    private languages: string[] = [] // mettiamo a questo metodo la visibilità private e vediamo come cambiano le cose 
-    // mettendo quest aprivate all'niterno di questa classe non cambiera nulla 
-    // ma se andiamo nell'altra classe riga 36 avremo un errore 
-    // perche questa proprietà potra essere utilizzata solo in questa classe
+    languages: LanguageType[] = [] 
 
     constructor(name:string,code:string){
         this.name = name
         this.code = code
     }
-    public addLanguage(language:string){ // vediamo che succede se modifico qui in privact
+    addLanguage(language:LanguageType){ 
         this.languages.push(language)
     }
-    // mettiamo a questo metodo la visibilità protected e vediamo come cambiano le cose
-    protected describeLanguage():string{
-        return `the languages spoken in ${this.name} include ${this.languages.join(", ")}`
-    }
-    // a linea 62 avremo un errore "La proprietà 'describeLanguage' è protetta e accessibile solo all'interno della classe 'Country' e delle relative sottoclassi."
-}
-
-class CountryWithCurrency extends Country{
-
-currency:Currency
-constructor(name:string,code:string,currency:Currency){
-    super(name,code);
     
-    this.currency = currency
-    // this.languages//La proprietà 'languages' è privata e accessibile solo all'interno della classe 'Country
-    }
-    
-    describeCurrency(): string {
-        return `the currency of ${this.name} is the ${this.currency.name} ${this.currency.symbol} ${this.currency.code}`
-    }
-    describe():string{
-        let descrizione = `the Country descprition: ${this.name}\n`;
-        descrizione += this.describeLanguage()+"\n";
-        descrizione += this.describeCurrency();
-        return descrizione
-    }
 }
-const spagnaCurrency= {
-    name:"euro",
-    code:"EU",
-    symbol:"$"
-}
-interface Currency{
-    name:string,
-    code: string,
-    symbol:string
-}
+// const india = new Country<string>("india","IN")
+const india = new Country<{name:string,percentage:number}>("india","IN")
+// india.addLanguage("hindi")
+// india.addLanguage("bangali")
+//6) adesso dopo che la nostra classe è diventata generica possiamo passare ai linguaggi un oggetto 
+//7) chiaramente ci dira che non è una stringa e questo perche a country gli abbiamo dato il type string 
+//8)per risolvere ci basta dare a country il type oggetto con le proprieta name e percentage
+india.addLanguage({name:"hindi", percentage: 57})
+india.addLanguage({name:"bangali", percentage: 33})
+console.log(india)
 
-const Spagna = new CountryWithCurrency("spagna","es",spagnaCurrency);
-console.log(Spagna)
 
-Spagna.addLanguage("spagnolo")
-Spagna.addLanguage("catalano")
-//togliamo queste 2 righe di codice
-// const SpagnaDescription = Spagna.describeLanguage();
-// console.log(SpagnaDescription)
-
-const SpagnaDescriptionCurrency = Spagna.describeCurrency();
-console.log(SpagnaDescriptionCurrency)
-
-const spagnaFullDescription = Spagna.describe()
-console.log(spagnaFullDescription)
