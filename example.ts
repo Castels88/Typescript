@@ -1,76 +1,28 @@
-// in questa lezione vedremo come andare ad usare il partial readonly required utility type 
-// prima diamo una occhiata al partial 
-// come possiamo vedere in CountryB manca la proprietà currency se dovessimo associare 
-// l'interface Country avremmo un errore possiamo ovviare e questo errore ed associare
-// utilizzare partial
-
+// in questa lezione andremo a vedere la pick e omit utility 
+// con pick possiamo decidere che quando assegnamo una interface ad un oggetto vengono utilizzate solo
+// alcune prorpietà dell'interface 
+// come prima cosa andiamo a creare una type allies in cui andremo ad utilizzare il pick
+// e diremo di utilizzare solo name e code
+//associamo il nuovo type allies all'oggetto e non avremo piu errori
 interface Country {
     name:string,
     code:string,
     currency:string,
     population:number
 }
-
-const countryA: Country = {
+type CountryPreview = Pick<Country, "name"|"code">
+const countryPreview: CountryPreview = {
     name:"spain",
     code:"es",
-    currency:"euro",
-    population: 123854
+    
 
 }
-const countryB: Partial<Country>  = { // => in questo modo
+//vediamo come usare lo omit ossia omettare alcune proprietà
+type CountryB = Omit<Country, "currency"|"population">
+const countryB:CountryB= { 
     name:"Nigeria",
     code:"ng",
-    population: 7894654
+    // population: 7894654,//=> ovremo un errore quindi possiamo toglierlo
+    // currency: "la fica"
 
 }
-
-// vediamo adesso required
-// per il primo ogeeto non ci srarnno problemi perche abbiamo 
-// tutte le proprietà per il secondo
-// possiamo mettere che sara necessario avere la proprieta che manca 
-
-interface Country2 {
-    name:string,
-    code:string,
-    currency?:string,
-    population?:number
-}
-
-const country2: Country = {
-    name:"spain",
-    code:"es",
-    currency:"euro",
-    population: 123854
-
-}
-const country3:Required<Country2>  = { //=>La proprietà 'currency' manca nel tipo
-    name:"Nigeria",
-    code:"ng",
-    population: 7894654
-
-}
-
-// vediamo il readonly esso va semplicemente a non permettere la modifica dei dati dell'oggetto
-interface Country3 {
-    name:string,
-    code:string,
-    currency:string,
-    population:number
-}
-
-const country4: Country = {
-    name:"spain",
-    code:"es",
-    currency:"euro",
-    population: 123854
-
-}
-const country5:Readonly<Country3>  = { //=>La proprietà 'currency' manca nel tipo
-    name:"Nigeria",
-    code:"ng",
-    population: 7894654,
-    currency: "naira"
-
-}
-country5.population="123546"//=> Non è possibile assegnare a 'population' perché è una proprietà di sola lettura
