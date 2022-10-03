@@ -1,55 +1,76 @@
-// in qiesto modo stiamo dicendo che all'interno della allies 
-// ogni key => proprieta dell'oggetto a cui la associamo deve essere una stringa: e che i loro valori devono essere pure delle stringhe
-// se aggiungo una proprieta stringa con un valore boolean avro un errore
-type Currency={
-    [Key:string]:string;
-}
-const currency:Currency={
-    name:"italia",
-    code:"it",
-    symbol:"$",
-    // seiciccia: true//Il tipo 'boolean' non è assegnabile al tipo 'string'
-}
-//-----------------------------------------------------------------------------//
-//andiamo ad utilizzare un map type
-// come prima cosa per creare un map type che possa intefacciarsi con la constante che valori boolean
-// dobbiamo creare un generic type => type Available<Type>
-// alla quale andremo creare il map type
-// il in keyof non farebbe altro che rappresentare le proprieta di CountryData language e population
-// utilizziamo il keyof perche in questo modo se aggiungiamo altre proprieta lui va a prenderle da solo
-type Available<Type>={
-[Property in keyof Type]:boolean
-}
+// in questa lezione vedremo come andare ad usare il partial readonly required utility type 
+// prima diamo una occhiata al partial 
+// come possiamo vedere in CountryB manca la proprietà currency se dovessimo associare 
+// l'interface Country avremmo un errore possiamo ovviare e questo errore ed associare
+// utilizzare partial
 
-type Countrydata={
-    language: string[],
+interface Country {
+    name:string,
+    code:string,
+    currency:string,
     population:number
 }
-const availableCountryData:Available<Countrydata>={
-    language:true,
-    population:false
+
+const countryA: Country = {
+    name:"spain",
+    code:"es",
+    currency:"euro",
+    population: 123854
+
+}
+const countryB: Partial<Country>  = { // => in questo modo
+    name:"Nigeria",
+    code:"ng",
+    population: 7894654
+
 }
 
-//----------------------------------------------//
-//andiamo a vedere un altro esempio 
-//aggiungiamo alle proprietà la caratteristica readonly 
-// come potremo vedere avremo un errore quando proviamo a modificare la prorieta proprio perche è in read-only
-// per farsi che possa essere modificata si mette -readonly davnti al map type
-// se togliamo il read-only alle proprietà possiamo mettere +readonly davanti al map e in questo modo le prorietà anche future 
-// che aggiungiamo saranno in read only 
-// se volessimo rendere opzionali le proprieta del map type => -readonly [Property in keyof Type]+?:boolean "basta aggiungere il "+?" dopo la [] "
+// vediamo adesso required
+// per il primo ogeeto non ci srarnno problemi perche abbiamo 
+// tutte le proprietà per il secondo
+// possiamo mettere che sara necessario avere la proprieta che manca 
 
-type Available2<Type>={
-    -readonly [Property in keyof Type]:boolean
-    // +readonly [Property in keyof Type]:boolean
-    }
-    
-    type Countrydata2={
-        readonly language: string[],
-        readonly population:number
-    }
-    const availableCountryData2:Available2<Countrydata2>={
-        language:true,
-        population:false
-    }
-    availableCountryData2.population=true
+interface Country2 {
+    name:string,
+    code:string,
+    currency?:string,
+    population?:number
+}
+
+const country2: Country = {
+    name:"spain",
+    code:"es",
+    currency:"euro",
+    population: 123854
+
+}
+const country3:Required<Country2>  = { //=>La proprietà 'currency' manca nel tipo
+    name:"Nigeria",
+    code:"ng",
+    population: 7894654
+
+}
+
+// vediamo il readonly esso va semplicemente a non permettere la modifica dei dati dell'oggetto
+interface Country3 {
+    name:string,
+    code:string,
+    currency:string,
+    population:number
+}
+
+const country4: Country = {
+    name:"spain",
+    code:"es",
+    currency:"euro",
+    population: 123854
+
+}
+const country5:Readonly<Country3>  = { //=>La proprietà 'currency' manca nel tipo
+    name:"Nigeria",
+    code:"ng",
+    population: 7894654,
+    currency: "naira"
+
+}
+country5.population="123546"//=> Non è possibile assegnare a 'population' perché è una proprietà di sola lettura
